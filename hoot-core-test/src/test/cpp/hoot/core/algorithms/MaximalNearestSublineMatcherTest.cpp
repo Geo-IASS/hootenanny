@@ -157,6 +157,7 @@ public:
 
 };
 
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineMatcherTest, "quick");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineMatcherTest, "current");
+//CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineMatcherTest, "quick");
 
 }

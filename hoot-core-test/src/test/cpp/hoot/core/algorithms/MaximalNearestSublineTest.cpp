@@ -41,7 +41,6 @@
 #include <hoot/core/visitors/FindWaysVisitor.h>
 using namespace hoot;
 
-
 // Boost
 using namespace boost;
 
@@ -60,6 +59,7 @@ using namespace boost;
 using namespace std;
 
 #include "../TestUtils.h"
+#include "../ThreadedTestSuite.h"
 
 class MaximalNearestSublineTest : public CppUnit::TestFixture
 {
@@ -249,6 +249,6 @@ public:
 };
 
 
-//CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineTest, "current");
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineTest, "quick");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineTest, "current");
+//CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(MaximalNearestSublineTest, "quick");
 

@@ -1023,7 +1023,7 @@ HEADERS += \
     src/main/cpp/hoot/core/algorithms/linearreference/WayMatchStringMappingConverter.h \
     src/main/cpp/hoot/core/io/OsmApiDbAwareHootApiDbWriter.h \
     src/main/cpp/hoot/core/io/OsmApiDbAwareHootApiDbReader.h \
-				src/main/cpp/hoot/core/io/OsmJsonReader.h \
+    src/main/cpp/hoot/core/io/OsmJsonReader.h \
     src/main/cpp/hoot/core/visitors/RemoveInvalidReviewRelationsVisitor.h \
     src/main/cpp/hoot/core/filters/BuildingWayNodeCriterion.h \
     src/main/cpp/hoot/core/visitors/WorstCircularErrorVisitor.h \

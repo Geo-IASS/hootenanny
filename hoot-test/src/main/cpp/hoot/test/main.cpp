@@ -46,6 +46,8 @@ using namespace geos::geom;
 
 // Hoot
 #include <hoot/core/Hoot.h>
+#include <hoot/core/HootConfig.h>
+#include <hoot/core/ThreadedTestSuite.h>
 #include <hoot/core/schema/OsmSchema.h>
 #include <hoot/core/test/ConflateCaseTestSuite.h>
 #include <hoot/core/util/ConfigOptions.h>
@@ -65,11 +67,13 @@ using namespace hoot;
 #include <iostream>
 using namespace std;
 
+//  Boost
+#include <boost/thread/mutex.hpp>
+
 // Tgs
 #include <tgs/System/Time.h>
 
 #include "ScriptTestSuite.h"
-#include <hoot/core/HootConfig.h>
 
 class HootTestListener : public CppUnit::TestListener
 {
@@ -86,6 +90,8 @@ public:
 
   virtual void addFailure(const CppUnit::TestFailure& failure)
   {
+    _mutex.lock();
+
     cout << endl << "Failure: " << failure.failedTest()->getName() << endl
       << "  " << failure.sourceLine().fileName() << "(" << failure.sourceLine().lineNumber() << ") ";
     CppUnit::Exception* e = failure.thrownException();
@@ -94,6 +100,9 @@ public:
       cout << "  " << e->message().details();
     }
     cout.flush();
+
+    _mutex.unlock();
+
     _success = false;
   }
 
@@ -105,6 +114,9 @@ public:
   virtual void endTest(CppUnit::Test * test )
   {
     double elapsed = Tgs::Time::getTime() - _start;
+
+    _mutex.lock();
+
     if (_showTestName)
     {
       cout << test->getName() << " - " << elapsed << endl;
@@ -116,6 +128,8 @@ public:
     }
     cout.flush();
 
+    _mutex.unlock();
+
     _start = Tgs::Time::getTime();
   }
 
@@ -125,14 +139,18 @@ public:
   {
     if (_showTestName)
     {
+      _mutex.lock();
       cout << "Starting " << suite->getName().data() << endl << flush;
+      _mutex.unlock();
     }
   }
 
   virtual void endTestRun(CppUnit::Test* /*test*/, CppUnit::TestResult* /*eventManager*/ )
   {
+    _mutex.lock();
     cout << endl;
     cout << "Elapsed: " << Tgs::Time::getTime() - _allStart << endl;
+    _mutex.unlock();
   }
 
 private:
@@ -142,6 +160,8 @@ private:
   double _start;
   double _allStart;
   double _slowTest;
+
+  boost::mutex _mutex;
 };
 
 void filterPattern(CppUnit::Test* from, CppUnit::TestSuite* to, QString pattern,
@@ -296,7 +316,8 @@ int main(int argc, char *argv[])
 
   Log::getInstance().setLevel(Log::Warn);
   CppUnit::TextUi::TestRunner runner;
-  CppUnit::TestSuite *rootSuite = new CppUnit::TestSuite( "All tests" );
+//  CppUnit::TestSuite *rootSuite = new CppUnit::TestSuite( "All tests" );
+  CppUnit::TestSuite *rootSuite = new ThreadedTestSuite( "Threaded current tests");
 
 # if HOOT_HAVE_HADOOP
     Hoot::getInstance().loadLibrary("PrettyPipesExample");
@@ -372,7 +393,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-      if (args.contains("--current"))
+      if (args.contains("--current") || true)
       {
         listener = new HootTestListener(true);
         Log::getInstance().setLevel(Log::Info);

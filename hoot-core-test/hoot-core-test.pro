@@ -249,6 +249,7 @@ services:SOURCES += \
 HEADERS += \
     src/test/cpp/hoot/core/algorithms/MaximalNearestSublineTest.h \
     src/test/cpp/hoot/core/TestUtils.h \
+    src/test/cpp/hoot/core/ThreadedTestSuite.h \
     src/test/cpp/hoot/core/io/ServicesDbTestUtils.h \
 
 HEADERS += \
