@@ -85,7 +85,7 @@ private:
   //key=<word>;<tag key>, value=<tag values>
   //QMap<QString, QStringList> _wordTagKeysToTagValues; //TODO: replace with stxxl map
   //key=<lower case word>, value=<word>
-  //TODO: replace with stxxl map
+  //TODO: replace with BigMap
   QMap<QString, QString>/*FixedLengthStringToFixedLengthStringMap*//*Tgs::BigMap<FixedLengthString, FixedLengthString>*/ _wordCaseMappings;
   //TODO
   //_wordsToIgnore;
@@ -95,10 +95,7 @@ private:
   long _highestRuleWordCount;
   long _highestRuleTagCount;
   //Technically, this could be done with a vector, but I want to piggy back off BigMap.
-  /*FixedLengthStringToLongMap*/QMap<QString, long> _wordKeysToCounts;   //TODO: replace with stxxl
-
-  //ImplicitTagRulesByWord _tagRulesByWord;
-  //ImplicitTagRules _tagRules;
+  /*FixedLengthStringToLongMap*/QMap<QString, long> _wordKeysToCounts;   //TODO: replace with BigMap
 
   boost::shared_ptr<QTemporaryFile> _countFile;
   boost::shared_ptr<QTemporaryFile> _sortedCountFile;
@@ -106,25 +103,13 @@ private:
 
   void _updateForNewWord(QString word, const QString kvp);
   QStringList _getPoiKvps(const Tags& tags) const;
-  //void _removeKvpsBelowOccuranceThreshold(const int minOccurancesThreshold);
-
-  //void _removeDuplicatedKeyTypes(); - **
-
-  //void _generateTagRulesByWord();
-  //void _rulesByWordToRules(const ImplicitTagRulesByWord& rulesByWord);
-  //Tags _kvpsToTags(const QSet<QString>& kvps);
-  //QString _kvpsToString(const QSet<QString>& kvps);
-
-  //void _unescapeRuleWords(); - **
 
   //temp
-  //QMap<QString, long> _stxxlMapToQtMap(const FixedLengthStringToLongMap& stxxlMap);
+  QMap<QString, long> _stxxlMapToQtMap(const FixedLengthStringToLongMap& stxxlMap);
   FixedLengthString _qStrToFixedLengthStr(const QString wordKvp);
   QString _fixedLengthStrToQStr(const FixedLengthString& fixedLengthStr);
   bool _outputsContainsSqlite(const QStringList outputs);
-  //FixedLengthString _qStrToFixedLengthStr2(const QString wordKvp);
-  //QString _fixedLengthStrToQStr2(const FixedLengthString& fixedLengthStr);
-  void _sortTempFileByOccurranceCount();
+  void _removeKvpsBelowOccuranceThresholdAndSortByOccurrence(const int minOccurancesThreshold);
   void _removeDuplicatedKeyTypes();
 };
 
