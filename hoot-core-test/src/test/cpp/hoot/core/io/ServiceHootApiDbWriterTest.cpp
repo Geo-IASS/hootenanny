@@ -43,7 +43,6 @@
 #include <functional>
 
 // TGS
-#include <tgs/BigContainers/BigMap.h>
 #include <tgs/System/Time.h>
 
 #include "../TestUtils.h"

@@ -31,9 +31,14 @@
 #include <hoot/rnd/schema/ImplicitTagRule.h>
 #include <hoot/rnd/util/FixedLengthString.h>
 
+// Tgs
+#include <tgs/BigContainers/BigMap.h>
+
 // Qt
 #include <QString>
 #include <QMap>
+#include <QTemporaryFile>
+#include <QVector>
 
 namespace hoot
 {
@@ -76,36 +81,51 @@ private:
   friend class PoiImplicitTagRulesDeriverTest;
 
   //key=<word>;<kvp>, value=<kvp occurance count>
-  FixedLengthStringToLongMap _wordKvpsToOccuranceCounts;
+  //FixedLengthStringToLongMap _wordKvpsToOccuranceCounts;
   //key=<word>;<tag key>, value=<tag values>
-  QMap<QString, QStringList> _wordTagKeysToTagValues; //TODO: replace with stxxl map
+  //QMap<QString, QStringList> _wordTagKeysToTagValues; //TODO: replace with stxxl map
   //key=<lower case word>, value=<word>
-  FixedLengthStringToFixedLengthStringMap _wordCaseMappings;
+  //TODO: replace with stxxl map
+  QMap<QString, QString>/*FixedLengthStringToFixedLengthStringMap*//*Tgs::BigMap<FixedLengthString, FixedLengthString>*/ _wordCaseMappings;
   //TODO
-  //QStringList _wordsToIgnore;
+  //_wordsToIgnore;
   double _avgTagsPerRule;
   double _avgWordsPerRule;
   long _statusUpdateInterval;
   long _highestRuleWordCount;
   long _highestRuleTagCount;
+  //Technically, this could be done with a vector, but I want to piggy back off BigMap.
+  /*FixedLengthStringToLongMap*/QMap<QString, long> _wordKeysToCounts;   //TODO: replace with stxxl
 
-  ImplicitTagRulesByWord _tagRulesByWord;
-  ImplicitTagRules _tagRules;
+  //ImplicitTagRulesByWord _tagRulesByWord;
+  //ImplicitTagRules _tagRules;
+
+  boost::shared_ptr<QTemporaryFile> _countFile;
+  boost::shared_ptr<QTemporaryFile> _sortedCountFile;
+  boost::shared_ptr<QTemporaryFile> _sortedDedupedCountFile;
 
   void _updateForNewWord(QString word, const QString kvp);
   QStringList _getPoiKvps(const Tags& tags) const;
-  void _removeKvpsBelowOccuranceThreshold(const int minOccurancesThreshold);
-  void _removeDuplicatedKeyTypes();
-  void _generateTagRulesByWord();
-  void _rulesByWordToRules(const ImplicitTagRulesByWord& rulesByWord);
-  Tags _kvpsToTags(const QSet<QString>& kvps);
-  QString _kvpsToString(const QSet<QString>& kvps);
-  void _unescapeRuleWords();
+  //void _removeKvpsBelowOccuranceThreshold(const int minOccurancesThreshold);
+
+  //void _removeDuplicatedKeyTypes(); - **
+
+  //void _generateTagRulesByWord();
+  //void _rulesByWordToRules(const ImplicitTagRulesByWord& rulesByWord);
+  //Tags _kvpsToTags(const QSet<QString>& kvps);
+  //QString _kvpsToString(const QSet<QString>& kvps);
+
+  //void _unescapeRuleWords(); - **
+
   //temp
-  QMap<QString, long> _stxxlMapToQtMap(const FixedLengthStringToLongMap& stxxlMap);
+  //QMap<QString, long> _stxxlMapToQtMap(const FixedLengthStringToLongMap& stxxlMap);
   FixedLengthString _qStrToFixedLengthStr(const QString wordKvp);
   QString _fixedLengthStrToQStr(const FixedLengthString& fixedLengthStr);
   bool _outputsContainsSqlite(const QStringList outputs);
+  //FixedLengthString _qStrToFixedLengthStr2(const QString wordKvp);
+  //QString _fixedLengthStrToQStr2(const FixedLengthString& fixedLengthStr);
+  void _sortTempFileByOccurranceCount();
+  void _removeDuplicatedKeyTypes();
 };
 
 }
